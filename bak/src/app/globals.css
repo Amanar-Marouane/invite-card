@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fdfaf5;
+  --foreground: #2d2417;
+  --ivory: #ffffff;
+  --soft-gold: #c5a021;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-ivory: var(--ivory);
+  --color-soft-gold: var(--soft-gold);
+  
+  --font-sans: var(--font-montserrat);
+  --font-pinyon: var(--font-pinyon);
+
+  --color-gold: #d4af37;
+  --color-burgundy: #800020;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-montserrat), ui-sans-serif, system-ui;
+  overflow-x: hidden;
+}
+
+/* Luxury Modern Container */
+.luxury-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.luxury-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #d4af37, transparent);
+}
+
+.parchment {
+  background-image: url('/textures/old_paper.jpg');
+  background-size: cover;
+  position: relative;
+}
+
+.script-font {
+  font-family: var(--font-pinyon), cursive;
+}
+
+.gold-text {
+  color: #d4af37;
+}
+
+.burgundy-bg {
+  background-color: #800020;
+}
+
+.modern-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 1s ease-out;
+}
+
+.reveal-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Elegant Section Spacing */
+.section-wrapper {
+  padding: 100px 20px;
+  text-align: center;
+}
+
+
