@@ -11,6 +11,7 @@ import { Heart, Music, Sparkles } from 'lucide-react';
 
 export default function Home() {
   const [reveal, setReveal] = useState(false);
+  const [envelopeDone, setEnvelopeDone] = useState(false);
   const weddingDate = '2026-06-20T14:00:00'; 
 
   useEffect(() => {
@@ -22,9 +23,9 @@ export default function Home() {
   }, [reveal]);
 
   return (
-    <main className="min-h-screen relative bg-black">
+    <main className="min-h-screen relative bg-[#fffdfa]">
       {/* Permanent Background Video for Hero */}
-      <div className="fixed inset-0 z-0">
+      <div className="absolute inset-x-0 top-0 h-screen z-0 overflow-hidden">
         <video
           autoPlay
           muted
@@ -40,8 +41,8 @@ export default function Home() {
 
       {/* 3D Envelope Reveal Overlay */}
       <AnimatePresence>
-        {!reveal && (
-          <SealCanvas key="seal" onStartReveal={() => setReveal(true)} />
+        {!envelopeDone && (
+          <SealCanvas key="seal" onStartReveal={() => setReveal(true)} onComplete={() => setEnvelopeDone(true)} />
         )}
       </AnimatePresence>
 
@@ -56,11 +57,11 @@ export default function Home() {
           >
             {/* Hero Section Text Area (Overlaying Video) */}
             <section className="relative h-screen w-full flex flex-col items-center justify-center text-center">
-              <div className="relative z-10 px-6">
+              <div className="relative z-10 px-6 mt-16 md:mt-0">
                 <motion.div 
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 1.5, delay: 0.5 }}
+                  initial={{ opacity: 0, y: 60, filter: 'blur(20px)', scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)', scale: 1 }}
+                  transition={{ duration: 2.2, ease: [0.22, 1, 0.36, 1] }}
                   className="flex flex-col items-center"
                 >
                   {/* Names with Decorative Accessoires */}

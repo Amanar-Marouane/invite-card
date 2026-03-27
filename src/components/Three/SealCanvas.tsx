@@ -4,59 +4,49 @@ import { Suspense, useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 
-export default function SealCanvas({ onStartReveal }: { onStartReveal: () => void }) {
+export default function SealCanvas({ onStartReveal, onComplete }: { onStartReveal: () => void, onComplete?: () => void }) {
   const [phase, setPhase] = useState<'closed' | 'middle' | 'opened' | 'expanding' | 'done'>('closed');
 
   const handleTap = () => {
     if (phase !== 'closed') return;
     
-    // 1. Instantly show the "middle" opening frame
+    // 1. Unveil the middle frame
     setPhase('middle');
 
-    // 2. Quickly transition to the fully "opened" frame for a real flip-book effect
-    setTimeout(() => setPhase('opened'), 150);
+    // 2. Smoothly complete the opening flip
+    setTimeout(() => setPhase('opened'), 200);
 
-    // 3. Pause for the user to see the opened envelope, then zoom into the pocket
-    setTimeout(() => setPhase('expanding'), 800);
+    // 3. Zoom into the envelope, AND simultaneously begin mounting the hero application site
+    setTimeout(() => {
+      setPhase('expanding');
+      onStartReveal(); // Parallel mounting! The text soars up underneath the zooming envelope.
+    }, 1000);
 
-    // 4. Fade into the main application content
+    // 4. Safely unmount SealCanvas entirely from React
     setTimeout(() => {
       setPhase('done');
-      onStartReveal();
-    }, 2200);
+      onComplete?.();
+    }, 2800);
   };
 
   return (
     // Outer Wrapper
     <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden pointer-events-none">
       
-      {/* Animated Deep Red "Night Sky" Background */}
+      {/* 
+        ELEGANT GLASSMORPHISM BACKGROUND 
+        Uses the actual live background video from the hero section, but deeply blurred.
+        As the sequence finishes, the blur lifts, perfectly connecting the scenes!
+      */}
       <motion.div 
-         className="absolute inset-0 z-0 bg-black pointer-events-none"
-         animate={{ opacity: (phase === 'expanding' || phase === 'done') ? 0 : 1 }}
-         transition={{ duration: 1.5, ease: "easeInOut" }}
-      >
-        <motion.div 
-          className="absolute top-[-20%] left-[-10%] w-[80vw] h-[80vw] rounded-full bg-[#8b0018] blur-[120px] opacity-50"
-          animate={{ scale: [1, 1.2, 1], x: ['0%', '10%', '0%'], y: ['0%', '5%', '0%'] }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div 
-          className="absolute bottom-[-20%] right-[-10%] w-[70vw] h-[70vw] rounded-full bg-[#5c0011] blur-[100px] opacity-60"
-          animate={{ scale: [1, 1.15, 1], x: ['0%', '-8%', '0%'], y: ['0%', '-5%', '0%'] }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div 
-          className="absolute top-[30%] left-[60%] w-[50vw] h-[50vw] rounded-full bg-[#3a0008] blur-[90px] opacity-80"
-          animate={{ scale: [1, 1.3, 1] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        />
-        {/* Twinkling star map overlay */}
-        <div 
-          className="absolute inset-0 opacity-40 mix-blend-screen bg-repeat" 
-          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='150' height='150' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='20' cy='20' r='1.5' fill='%23fff' opacity='0.7'/%3E%3Ccircle cx='120' cy='50' r='1' fill='%23fff' opacity='0.5'/%3E%3Ccircle cx='80' cy='120' r='2' fill='%23fff' opacity='0.2'/%3E%3Ccircle cx='140' cy='130' r='1' fill='%23fff' opacity='0.6'/%3E%3Ccircle cx='40' cy='100' r='1.5' fill='%23fff' opacity='0.4'/%3E%3C/svg%3E")` }} 
-        />
-      </motion.div>
+         className="absolute inset-0 z-0 pointer-events-none"
+         initial={{ backdropFilter: 'blur(60px)', backgroundColor: 'rgba(5, 5, 5, 0.75)' }}
+         animate={{ 
+           backdropFilter: (phase === 'expanding' || phase === 'done') ? 'blur(0px)' : 'blur(60px)',
+           backgroundColor: (phase === 'expanding' || phase === 'done') ? 'rgba(0,0,0,0)' : 'rgba(5, 5, 5, 0.75)'
+         }}
+         transition={{ duration: 1.8, ease: "easeInOut" }}
+      />
 
       <AnimatePresence>
         {phase !== 'done' && (
@@ -64,30 +54,36 @@ export default function SealCanvas({ onStartReveal }: { onStartReveal: () => voi
             className="absolute inset-0 flex items-center justify-center pointer-events-auto"
             exit={{ opacity: 0 }}
             transition={{ duration: 1.2 }}
-            style={{ perspective: 1000 }}
+            style={{ perspective: 1200 }}
           >
-            {/* ENVELOPE CONTAINER: Using base scale 1.6 to make the user's images beautifully massive! */}
+            {/* ENVELOPE CONTAINER: Seamless animated transitions & Camera Lens blur on approach */}
             <motion.div 
               className="relative w-[100vw] sm:w-[90vw] max-w-[800px] aspect-[1.4/1] cursor-pointer drop-shadow-[0_25px_50px_rgba(0,0,0,0.8)] flex items-center justify-center z-10"
               onClick={handleTap}
-              initial={{ scale: 1.8, rotateZ: 0 }}
+              initial={{ scale: 1.8, rotateZ: 0, filter: 'blur(0px)', y: 0 }}
               animate={
-                phase === 'middle'
-                  ? { y: '2vh', scale: 1.75, rotateZ: -1 } // Physical "punch" when opening
+                phase === 'closed'
+                  ? { y: [0, -8, 0], scale: 1.8, rotateZ: 0, filter: 'blur(0px)' } // Floating breathe effect
+                  : phase === 'middle'
+                  ? { y: '-3vh', scale: 1.85, rotateZ: -1.5, filter: 'blur(0px)' } // Physical snap up
                   : phase === 'expanding' 
-                  ? { y: '20vh', opacity: 0, scale: 5, rotateZ: 0 } // Massive dissolve into the screen
-                  : { y: 0, opacity: 1, scale: 1.8, rotateZ: 0 }
+                  ? { y: '25vh', opacity: 0, scale: 6, rotateZ: 0, filter: 'blur(40px)' } // Depth of Field Lens Blur
+                  : { y: 0, opacity: 1, scale: 1.8, rotateZ: 0, filter: 'blur(0px)' } // Settled opened
               }
               transition={{ 
-                duration: phase === 'middle' ? 0.1 : 1.4, 
-                ease: phase === 'middle' ? "easeOut" : [0.22, 1, 0.36, 1] 
+                y: phase === 'closed' ? { duration: 4, repeat: Infinity, ease: "easeInOut" } : { duration: 1.4, ease: [0.22, 1, 0.36, 1] },
+                scale: { duration: phase === 'expanding' ? 1.6 : 1.4, ease: [0.22, 1, 0.36, 1] },
+                filter: { duration: phase === 'expanding' ? 1.2 : 0 },
+                rotateZ: { duration: 0.3, ease: "easeOut" }
               }}
             >
 
               {/* LAYER 1: FULLY OPENED ENVELOPE */}
-              <div 
-                className="absolute inset-0 z-[1] rounded-md overflow-hidden"
-                style={{ opacity: phase === 'opened' || phase === 'expanding' ? 1 : 0 }}
+              <motion.div 
+                className="absolute inset-0 z-[1] rounded-md overflow-hidden scale-130"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: phase === 'opened' || phase === 'expanding' ? 1 : 0 }}
+                transition={{ duration: 0.25, ease: "easeIn" }}
               >
                  <Image
                     src="/textures/envelope_opened.png"
@@ -96,12 +92,14 @@ export default function SealCanvas({ onStartReveal }: { onStartReveal: () => voi
                     className="object-contain"
                     priority
                  />
-              </div>
+              </motion.div>
 
               {/* LAYER 2: MIDDLE OPENED ENVELOPE (The midway flip frame) */}
-              <div 
-                className="absolute inset-0 z-[2] rounded-md overflow-hidden"
-                style={{ opacity: phase === 'middle' ? 1 : 0 }}
+              <motion.div 
+                className="absolute inset-0 z-[2] rounded-md overflow-hidden scale-120"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: phase === 'middle' ? 1 : 0 }}
+                transition={{ duration: 0.15 }}
               >
                  <Image
                     src="/textures/envelope_middle_opened.png"
@@ -110,12 +108,14 @@ export default function SealCanvas({ onStartReveal }: { onStartReveal: () => voi
                     className="object-contain"
                     priority
                  />
-              </div>
+              </motion.div>
 
               {/* LAYER 3: CLOSED ENVELOPE */}
-              <div
+              <motion.div
                  className="absolute inset-0 z-[3] rounded-md overflow-hidden"
-                 style={{ opacity: phase === 'closed' ? 1 : 0 }}
+                 initial={{ opacity: 1 }}
+                 animate={{ opacity: phase === 'closed' ? 1 : 0 }}
+                 transition={{ duration: 0.15 }}
               >
                  <Image
                     src="/textures/envelope_closed.png"
@@ -124,7 +124,7 @@ export default function SealCanvas({ onStartReveal }: { onStartReveal: () => voi
                     className="object-contain"
                     priority
                  />
-              </div>
+              </motion.div>
 
             </motion.div>
 
@@ -133,13 +133,13 @@ export default function SealCanvas({ onStartReveal }: { onStartReveal: () => voi
               {phase === 'closed' && (
                 <motion.div
                   className="absolute z-[5] inset-x-0 bottom-[5%] md:bottom-[10%] text-center px-4"
-                  initial={{ opacity: 0, y: 15 }}
+                  initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ delay: 0.6, duration: 1 }}
+                  exit={{ opacity: 0, y: -10, filter: 'blur(10px)' }}
+                  transition={{ delay: 0.2, duration: 0.8 }}
                 >
                   <div className="flex flex-col items-center gap-4">
-                    <p className="script-font text-5xl md:text-6xl text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
+                    <p className="script-font text-5xl md:text-6xl text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)] leading-tight">
                       Asmae & Yassine
                     </p>
                     <p className="text-[10px] md:text-xs uppercase tracking-[0.6em] text-white/90 drop-shadow-[0_2px_4px_rgba(0,0,0,1)] font-medium">
