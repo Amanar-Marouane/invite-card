@@ -10,23 +10,23 @@ export default function SealCanvas({ onStartReveal, onComplete }: { onStartRevea
   const handleTap = () => {
     if (phase !== 'closed') return;
     
-    // 1. Unveil the middle frame
+    // 1. Gently transition to the middle frame
     setPhase('middle');
 
-    // 2. Smoothly complete the opening flip
-    setTimeout(() => setPhase('opened'), 200);
+    // 2. Melting softly into the fully opened frame
+    setTimeout(() => setPhase('opened'), 300);
 
-    // 3. Zoom into the envelope, AND simultaneously begin mounting the hero application site
+    // 3. Luxurious pause, then the camera dive
     setTimeout(() => {
       setPhase('expanding');
-      onStartReveal(); // Parallel mounting! The text soars up underneath the zooming envelope.
-    }, 1000);
+      onStartReveal(); 
+    }, 1200);
 
-    // 4. Safely unmount SealCanvas entirely from React
+    // 4. Safely unmount
     setTimeout(() => {
       setPhase('done');
       onComplete?.();
-    }, 2800);
+    }, 3000);
   };
 
   return (
@@ -54,28 +54,24 @@ export default function SealCanvas({ onStartReveal, onComplete }: { onStartRevea
             className="absolute inset-0 flex items-center justify-center pointer-events-auto"
             exit={{ opacity: 0 }}
             transition={{ duration: 1.2 }}
-            style={{ perspective: 1200 }}
+            style={{ perspective: 1500 }}
           >
-            {/* ENVELOPE CONTAINER: Seamless animated transitions & Camera Lens blur on approach */}
+            {/* ENVELOPE CONTAINER: Silky Smooth Video Flow Transitions */}
             <motion.div 
-              className="relative w-[100vw] sm:w-[90vw] max-w-[800px] aspect-[1.4/1] cursor-pointer drop-shadow-[0_25px_50px_rgba(0,0,0,0.8)] flex items-center justify-center z-10"
+              className="relative w-[100vw] sm:w-[90vw] max-w-[800px] aspect-[1.4/1] cursor-pointer drop-shadow-[0_25px_50px_rgba(0,0,0,0.8)] flex items-center justify-center z-10 origin-bottom"
               onClick={handleTap}
-              initial={{ scale: 1.8, rotateZ: 0, filter: 'blur(0px)', y: 0 }}
+              initial={{ scale: 1.8, rotateX: 0, filter: 'blur(0px)', y: 0 }}
               animate={
                 phase === 'closed'
-                  ? { y: [0, -8, 0], scale: 1.8, rotateZ: 0, filter: 'blur(0px)' } // Floating breathe effect
+                  ? { y: [0, -4, 0], scale: 1.8, rotateX: 0, filter: 'blur(0px)', transition: { y: { duration: 5, repeat: Infinity, ease: "easeInOut" } } }
                   : phase === 'middle'
-                  ? { y: '-3vh', scale: 1.85, rotateZ: -1.5, filter: 'blur(0px)' } // Physical snap up
+                  ? { y: '-1.5vh', scale: 1.82, rotateX: -4, filter: 'blur(0px)', transition: { duration: 0.3, ease: "easeOut" } } // Gentle 3D lean in
+                  : phase === 'opened'
+                  ? { y: '0vh', scale: 1.85, rotateX: 0, filter: 'blur(0px)', transition: { duration: 0.4, ease: "easeOut" } } // Smooth settle
                   : phase === 'expanding' 
-                  ? { y: '25vh', opacity: 0, scale: 6, rotateZ: 0, filter: 'blur(40px)' } // Depth of Field Lens Blur
-                  : { y: 0, opacity: 1, scale: 1.8, rotateZ: 0, filter: 'blur(0px)' } // Settled opened
+                  ? { y: '25vh', opacity: 0, scale: 6, rotateX: 0, filter: 'blur(40px)', transition: { duration: 1.6, ease: [0.22, 1, 0.36, 1] } }
+                  : { y: 0, opacity: 1, scale: 1.8, rotateX: 0, filter: 'blur(0px)' }
               }
-              transition={{ 
-                y: phase === 'closed' ? { duration: 4, repeat: Infinity, ease: "easeInOut" } : { duration: 1.4, ease: [0.22, 1, 0.36, 1] },
-                scale: { duration: phase === 'expanding' ? 1.6 : 1.4, ease: [0.22, 1, 0.36, 1] },
-                filter: { duration: phase === 'expanding' ? 1.2 : 0 },
-                rotateZ: { duration: 0.3, ease: "easeOut" }
-              }}
             >
 
               {/* LAYER 1: FULLY OPENED ENVELOPE */}
@@ -83,7 +79,7 @@ export default function SealCanvas({ onStartReveal, onComplete }: { onStartRevea
                 className="absolute inset-0 z-[1] rounded-md overflow-hidden scale-130"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: phase === 'opened' || phase === 'expanding' ? 1 : 0 }}
-                transition={{ duration: 0.25, ease: "easeIn" }}
+                transition={{ duration: 0.35, ease: "easeIn" }}
               >
                  <Image
                     src="/textures/envelope_opened.png"
@@ -99,7 +95,7 @@ export default function SealCanvas({ onStartReveal, onComplete }: { onStartRevea
                 className="absolute inset-0 z-[2] rounded-md overflow-hidden scale-120"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: phase === 'middle' ? 1 : 0 }}
-                transition={{ duration: 0.15 }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
               >
                  <Image
                     src="/textures/envelope_middle_opened.png"
@@ -115,7 +111,7 @@ export default function SealCanvas({ onStartReveal, onComplete }: { onStartRevea
                  className="absolute inset-0 z-[3] rounded-md overflow-hidden"
                  initial={{ opacity: 1 }}
                  animate={{ opacity: phase === 'closed' ? 1 : 0 }}
-                 transition={{ duration: 0.15 }}
+                 transition={{ duration: 0.25, ease: "easeOut" }}
               >
                  <Image
                     src="/textures/envelope_closed.png"
