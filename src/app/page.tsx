@@ -76,9 +76,9 @@ export default function Home() {
                 transition={{ repeat: Infinity, duration: 3 }}
                 className="relative z-10 pointer-events-none"
               >
-                <p className="text-white/20 text-[10px] tracking-[1em] uppercase font-light">
+                {/* <p className="text-white/20 text-[10px] tracking-[1em] uppercase font-light">
                   Tap to Enter
-                </p>
+                </p> */}
               </motion.div>
             )}
           </motion.div>
