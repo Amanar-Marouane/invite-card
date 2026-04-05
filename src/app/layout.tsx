@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Montserrat, Pinyon_Script } from "next/font/google";
+import { Montserrat, Pinyon_Script, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -13,9 +13,14 @@ const pinyonScript = Pinyon_Script({
   weight: "400",
 });
 
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
-  title: "The Royal Wedding Decree",
-  description: "A digital wedding experience invitation.",
+  title: "The Engagement Celebration",
+  description: "A digital invitation for our engagement.",
 };
 
 export default function RootLayout({
@@ -26,7 +31,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${montserrat.variable} ${pinyonScript.variable} h-full antialiased`}
+      className={`${montserrat.variable} ${pinyonScript.variable} ${playfair.variable} h-full antialiased`}
     >
       <body className="min-h-full font-sans">{children}</body>
     </html>

@@ -2,95 +2,135 @@
 
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
+import { Music, Send, User, Mail } from 'lucide-react';
+import { useState } from 'react';
 
 export default function RSVPForm() {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, reset } = useForm();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
+    setIsSubmitting(true);
     console.log('Form Submitted:', data);
-    alert('Thank you! Your RSVP has been received.');
+
+    // Mock Email Logic using the provided API details
+    const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
+    const url = "https://smtp.monkeysmail.com/messages/send";
+
+    const emailBody = {
+      from: {
+        email: "no-reply@monkeys.cloud",
+        name: "Engagement RSVP"
+      },
+      to: [process.env.NEXT_PUBLIC_EMAIL],
+      subject: `New RSVP: ${data.name}`,
+      text: `Guest: ${data.name}\nEmail: ${data.email}\nMelody Request: ${data.melody || 'None'}`,
+      html: `
+        <div style="font-family: sans-serif; padding: 20px; color: #333;">
+          <h2 style="color: #96A58F;">New Engagement RSVP</h2>
+          <p><strong>Guest Name:</strong> ${data.name}</p>
+          <p><strong>Email:</strong> ${data.email}</p>
+          <p><strong>Melody Request:</strong> ${data.melody || 'None'}</p>
+        </div>
+      `
+    };
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': API_KEY
+        },
+        body: JSON.stringify(emailBody)
+      });
+      
+      console.log('Sending email with payload:', emailBody);
+      alert('Shukran! Your RSVP and melody request have been received.');
+      reset();
+    } catch (error) {
+      console.error('Error sending RSVP:', error);
+      alert('Something went wrong. Please try again later.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <div className="bg-ivory p-8 md:p-12 rounded-2xl shadow-[0_30px_60px_rgba(0,0,0,0.1)] border border-rose/10 max-w-lg mx-auto relative group">
+    <div className="bg-ivory/95 p-6 md:p-10 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-beige/20 max-w-lg mx-auto relative group">
       {/* Subtle Corner Ornament */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-rose/5 rounded-bl-full pointer-events-none" />
+      <div className="absolute top-0 right-0 w-24 h-24 bg-beige/10 rounded-bl-full pointer-events-none" />
       
-      <div className="text-center mb-4 relative z-10">
-        <h2 className="script-font text-5xl md:text-6xl text-rose/100 mb-6">Guest Response</h2>
-        <div className="h-[1px] w-20 bg-rose/20 mx-auto" />
+      <div className="text-center mb-10 relative z-10">
+        <h2 className="elegant-font text-3xl md:text-4xl text-sage mb-2 uppercase tracking-widest">Join Our Celebration</h2>
+        <p className="text-[10px] tracking-[0.3em] text-sage/60 uppercase">Kindly respond by May 20th</p>
       </div>
       
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 relative z-10">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 md:space-y-8 relative z-10">
+        
+        {/* Melody Section - Before RSVP fields as requested */}
+        <div className="space-y-4 pb-4 border-b border-sage/10">
+          <div className="flex items-center gap-2 mb-2">
+            <Music className="w-4 h-4 text-beige" />
+            <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-sage/80">Request a Melody</span>
+          </div>
+          <div className="relative group/field">
+            <input
+              {...register('melody')}
+              className="peer w-full bg-transparent border-b border-beige/30 focus:border-sage outline-none py-2 transition-all placeholder:text-sage/20 text-black text-sm"
+              placeholder="Song Title & Artist"
+            />
+          </div>
+        </div>
+
         {/* Name Field */}
-        <div className="relative group/field">
+        <div className="relative group/field pt-4">
+          <div className="flex items-center gap-2 mb-2">
+            <User className="w-4 h-4 text-beige" />
+            <label className="text-[10px] uppercase tracking-[0.2em] font-bold text-sage/80">Full Name</label>
+          </div>
           <input
             {...register('name')}
             required
-            className="peer w-full bg-transparent border-b-2 border-rose/10 focus:border-rose/60 outline-none py-3 transition-all placeholder-transparent text-black font-medium"
-            placeholder="Full Name"
+            className="peer w-full bg-transparent border-b border-beige/30 focus:border-sage outline-none py-2 transition-all placeholder:text-sage/20 text-black text-sm"
+            placeholder="e.g. John Doe"
           />
-          <label className="absolute left-0 -top-5 text-rose/60 text-[10px] uppercase tracking-[0.3em] font-bold transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 peer-placeholder-shown:text-sage/40 peer-focus:-top-5 peer-focus:text-rose/80">
-            Full Name
-          </label>
         </div>
         
         {/* Email Field */}
         <div className="relative group/field">
+          <div className="flex items-center gap-2 mb-2">
+            <Mail className="w-4 h-4 text-beige" />
+            <label className="text-[10px] uppercase tracking-[0.2em] font-bold text-sage/80">Email Address</label>
+          </div>
           <input
             {...register('email')}
             type="email"
             required
-            className="peer w-full bg-transparent border-b-2 border-rose/10 focus:border-rose/60 outline-none py-3 transition-all placeholder-transparent text-black font-medium"
-            placeholder="Email Address"
+            className="peer w-full bg-transparent border-b border-beige/30 focus:border-sage outline-none py-2 transition-all placeholder:text-sage/20 text-black text-sm"
+            placeholder="e.g. john@example.com"
           />
-          <label className="absolute left-0 -top-5 text-rose/60 text-[10px] uppercase tracking-[0.3em] font-bold transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:top-3 peer-placeholder-shown:text-sage/40 peer-focus:-top-5 peer-focus:text-rose/80">
-            Email Address
-          </label>
-        </div>
-        
-        <div className="grid grid-cols-2 gap-10">
-          {/* Guest Count */}
-          {/* <div className="flex flex-col">
-            <label className="text-[10px] uppercase tracking-[0.3em] text-rose/40 font-bold mb-2">Total Guests</label>
-            <select
-              {...register('guests')}
-              className="bg-transparent border-b-2 border-rose/10 focus:border-rose/60 outline-none py-2 text-sage cursor-pointer custom-select"
-            >
-              {[1, 2, 3, 4, '5+'].map((num) => (
-                <option key={num.toString()} value={num.toString()}>{num}</option>
-              ))}
-            </select>
-          </div> */}
-          
-          {/* Attending Toggle */}
-          <div className="flex flex-col grid-cols-2">
-            <label className="text-[10px] uppercase tracking-[0.3em] text-rose/40 font-bold mb-2">Attending?</label>
-            <div className="flex gap-4 py-2">
-              <label className="flex items-center gap-2 cursor-pointer group/radio">
-                <input type="radio" {...register('attending')} value="yes" defaultChecked className="accent-rose w-4 h-4" />
-                <span className="text-xs font-bold text-sage/70 uppercase">YES</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer group/radio">
-                <input type="radio" {...register('attending')} value="no" className="accent-sage/30 w-4 h-4" />
-                <span className="text-xs font-bold text-sage/50 uppercase">NO</span>
-              </label>
-            </div>
-          </div>
         </div>
         
         <motion.button
-          whileHover={{ y: -3, backgroundColor: '#8a9a83' }}
+          whileHover={{ scale: 1.02, backgroundColor: '#7a8a73' }}
           whileTap={{ scale: 0.98 }}
+          disabled={isSubmitting}
           type="submit"
-          className="w-full bg-rose text-ivory py-5 rounded-2xl font-bold uppercase tracking-[0.5em] text-[11px] shadow-xl transition-all"
+          className="w-full bg-sage text-ivory py-4 rounded-xl font-bold uppercase tracking-[0.4em] text-[10px] shadow-lg transition-all flex items-center justify-center gap-3 disabled:opacity-70"
         >
-          Confirm
+          {isSubmitting ? (
+            <span className="animate-pulse">Confirming...</span>
+          ) : (
+            <>
+              Confirm Attendance <Send className="w-3 h-3" />
+            </>
+          )}
         </motion.button>
       </form>
 
-      <p className="text-center text-[10px] text-black mt-4 uppercase tracking-[0.2em] font-medium italic">
-        "We are looking forward to <br /> seeing you at the Palace jardins"
+      <p className="text-center text-[9px] md:text-[10px] text-sage/60 mt-8 uppercase tracking-[0.2em] font-medium italic">
+        "We are looking forward to <br /> seeing you at Salle Zouhra"
       </p>
     </div>
   );
