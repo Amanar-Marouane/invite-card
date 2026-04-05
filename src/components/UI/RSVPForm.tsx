@@ -40,7 +40,7 @@ export default function RSVPForm() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-API-Key': API_KEY
+          'X-API-Key': API_KEY as string
         },
         body: JSON.stringify(emailBody)
       });
