@@ -69,31 +69,7 @@ export default function Home() {
   return (
     <main className="bg-sage text-ivory min-h-screen w-full overflow-hidden">
       
-      {/* ===== SIMPLE LOADER (Fades out when video is ready) ===== */}
-      <AnimatePresence>
-        {isLoading && (
-          <motion.div 
-            key="loader"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-sage"
-          >
-            <motion.div 
-              animate={{ 
-                scale: [1, 1.2, 1],
-                opacity: [0.5, 1, 0.5]
-              }}
-              transition={{ repeat: Infinity, duration: 1.5 }}
-              className="flex flex-col items-center gap-4"
-            >
-              <div className="w-12 h-12 border-2 border-beige/30 border-t-beige rounded-full animate-spin" />
-              <span className="elegant-font text-xs uppercase tracking-[0.4em] text-beige">Loading</span>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* ===== INITIAL VIDEO OVERLAY ===== */}
+      {/* ===== INITIAL ENTRYWAY (With integrated loader) ===== */}
       <AnimatePresence>
         {phase !== 'ended' && (
           <motion.div 
@@ -103,21 +79,48 @@ export default function Home() {
             className="fixed inset-0 z-50 flex items-center justify-center bg-sage"
             onClick={handleStart}
           >
+            {/* The Loader (Only visible when isLoading is true) */}
+            <AnimatePresence>
+              {isLoading && (
+                <motion.div 
+                  key="loader"
+                  initial={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.8 }}
+                  className="absolute inset-0 z-[60] flex items-center justify-center bg-sage"
+                >
+                  <motion.div 
+                    animate={{ 
+                      scale: [1, 1.1, 1],
+                      opacity: [0.6, 1, 0.6]
+                    }}
+                    transition={{ repeat: Infinity, duration: 2 }}
+                    className="flex flex-col items-center gap-6"
+                  >
+                    <div className="w-14 h-14 border-2 border-beige/20 border-t-beige rounded-full animate-spin" />
+                    <span className="elegant-font text-[10px] uppercase tracking-[0.6em] text-beige/80 ml-[0.6em]">Loading</span>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             <video
               ref={videoRef}
               src="/videos/opening.mp4"
-              className="absolute inset-0 w-full h-full object-cover"
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
               onTimeUpdate={handleTimeUpdate}
+              onPlaying={() => setIsLoading(false)}
               onEnded={handleVideoEnd}
-              onCanPlay={() => setTimeout(() => setIsLoading(false), 200)}
               playsInline
               preload="auto"
               muted={false}
             />
+
             {phase === 'initial' && !isLoading && (
               <motion.div 
-                animate={{ opacity: [0.3, 0.6, 0.3] }}
-                transition={{ repeat: Infinity, duration: 3 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0, 1, 0] }}
+                transition={{ repeat: Infinity, duration: 3, delay: 0.5 }}
                 className="relative z-10 pointer-events-none"
               >
                 <div className="w-16 h-16 border border-ivory/20 rounded-full flex items-center justify-center animate-ping">
