@@ -5,13 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Countdown from '@/components/UI/Countdown';
 import Venue from '@/components/UI/Venue';
 import RSVPForm from '@/components/UI/RSVPForm';
-import LoadingOverlay from '@/components/UI/LoadingOverlay';
 import { Heart, Music, Sparkles, ChevronDown } from 'lucide-react';
 
 export default function Home() {
   const [phase, setPhase] = useState<'initial' | 'playing' | 'ended'>('initial');
-  const [isInitialReady, setIsInitialReady] = useState(false);
-  const [isHeroReady, setIsHeroReady] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const heroVideoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -19,29 +16,8 @@ export default function Home() {
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
-    
-    // Fail-safe: if videos haven't loaded in 8s, show the content anyway
-    const timer = setTimeout(() => {
-      setIsInitialReady(true);
-      setIsHeroReady(true);
-    }, 8000);
-
-    // Immediate check for readiness (cached)
-    const checkReadiness = () => {
-      if (videoRef.current && videoRef.current.readyState >= 3) {
-        setIsInitialReady(true);
-      }
-      if (heroVideoRef.current && heroVideoRef.current.readyState >= 3) {
-        setIsHeroReady(true);
-      }
-    };
-
-    const interval = setInterval(checkReadiness, 500);
-
     return () => {
       document.body.style.overflow = 'auto';
-      clearTimeout(timer);
-      clearInterval(interval);
     };
   }, []);
 
@@ -76,11 +52,6 @@ export default function Home() {
   return (
     <main className="bg-sage text-ivory min-h-screen w-full overflow-hidden">
       
-      {/* ===== LOADING OVERLAY (Invitation Theme) ===== */}
-      <AnimatePresence>
-        {!isInitialReady && <LoadingOverlay key="loader" />}
-      </AnimatePresence>
-
       {/* ===== INITIAL VIDEO OVERLAY ===== */}
       <AnimatePresence>
         {phase !== 'ended' && (
@@ -97,13 +68,11 @@ export default function Home() {
               className="absolute inset-0 w-full h-full object-cover"
               onTimeUpdate={handleTimeUpdate}
               onEnded={handleVideoEnd}
-              onCanPlay={() => setIsInitialReady(true)}
-              onCanPlayThrough={() => setIsInitialReady(true)}
               playsInline
               preload="auto"
               muted={false}
             />
-            {phase === 'initial' && isInitialReady && (
+            {phase === 'initial' && (
               <motion.div 
                 animate={{ opacity: [0.3, 0.6, 0.3] }}
                 transition={{ repeat: Infinity, duration: 3 }}
@@ -129,27 +98,18 @@ export default function Home() {
           <video
             ref={heroVideoRef}
             src="/videos/walking_sceen.mp4"
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${isHeroReady ? 'opacity-60' : 'opacity-0'}`}
+            className="absolute inset-0 w-full h-full object-cover opacity-60"
             autoPlay
             muted
             loop
             playsInline
             preload="auto"
-            onCanPlay={() => setIsHeroReady(true)}
-            onCanPlayThrough={() => setIsHeroReady(true)}
             onTimeUpdate={(e) => {
               if (e.currentTarget.currentTime >= 10) {
                 e.currentTarget.currentTime = 0;
               }
             }}
           />
-          
-          {/* Skeleton/Placeholder for Hero Video */}
-          {!isHeroReady && (
-             <div className="absolute inset-0 bg-[#0a0a0a] flex items-center justify-center">
-                <div className="w-8 h-8 border border-white/10 rounded-full animate-pulse" />
-             </div>
-          )}
           <motion.div 
             initial="hidden"
             whileInView="visible"
