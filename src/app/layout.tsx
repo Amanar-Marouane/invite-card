@@ -23,6 +23,8 @@ export const metadata: Metadata = {
   description: "A digital invitation for our engagement.",
 };
 
+import MusicPlayer from "@/components/UI/MusicPlayer";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -33,7 +35,10 @@ export default function RootLayout({
       lang="en"
       className={`${montserrat.variable} ${pinyonScript.variable} ${playfair.variable} h-full antialiased`}
     >
-      <body className="min-h-full font-sans">{children}</body>
+      <body className="min-h-full font-sans bg-sage text-ivory">
+        {children}
+        <MusicPlayer />
+      </body>
     </html>
   );
 }

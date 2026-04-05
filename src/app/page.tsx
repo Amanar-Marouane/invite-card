@@ -5,18 +5,43 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Countdown from '@/components/UI/Countdown';
 import Venue from '@/components/UI/Venue';
 import RSVPForm from '@/components/UI/RSVPForm';
+import LoadingOverlay from '@/components/UI/LoadingOverlay';
 import { Heart, Music, Sparkles, ChevronDown } from 'lucide-react';
 
 export default function Home() {
   const [phase, setPhase] = useState<'initial' | 'playing' | 'ended'>('initial');
+  const [isInitialReady, setIsInitialReady] = useState(false);
+  const [isHeroReady, setIsHeroReady] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const heroVideoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const eventDate = '2026-05-04T00:00:00';
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
+    
+    // Fail-safe: if videos haven't loaded in 8s, show the content anyway
+    const timer = setTimeout(() => {
+      setIsInitialReady(true);
+      setIsHeroReady(true);
+    }, 8000);
+
+    // Immediate check for readiness (cached)
+    const checkReadiness = () => {
+      if (videoRef.current && videoRef.current.readyState >= 3) {
+        setIsInitialReady(true);
+      }
+      if (heroVideoRef.current && heroVideoRef.current.readyState >= 3) {
+        setIsHeroReady(true);
+      }
+    };
+
+    const interval = setInterval(checkReadiness, 500);
+
     return () => {
       document.body.style.overflow = 'auto';
+      clearTimeout(timer);
+      clearInterval(interval);
     };
   }, []);
 
@@ -33,12 +58,14 @@ export default function Home() {
     if (videoRef.current && phase === 'playing') {
       if (videoRef.current.currentTime >= 3) {
         setPhase('ended');
+        window.dispatchEvent(new CustomEvent('start-music'));
       }
     }
   };
 
   const handleVideoEnd = () => {
     setPhase('ended');
+    window.dispatchEvent(new CustomEvent('start-music'));
   };
 
   const sectionVariants = {
@@ -49,6 +76,11 @@ export default function Home() {
   return (
     <main className="bg-sage text-ivory min-h-screen w-full overflow-hidden">
       
+      {/* ===== LOADING OVERLAY (Invitation Theme) ===== */}
+      <AnimatePresence>
+        {!isInitialReady && <LoadingOverlay key="loader" />}
+      </AnimatePresence>
+
       {/* ===== INITIAL VIDEO OVERLAY ===== */}
       <AnimatePresence>
         {phase !== 'ended' && (
@@ -65,11 +97,13 @@ export default function Home() {
               className="absolute inset-0 w-full h-full object-cover"
               onTimeUpdate={handleTimeUpdate}
               onEnded={handleVideoEnd}
+              onCanPlay={() => setIsInitialReady(true)}
+              onCanPlayThrough={() => setIsInitialReady(true)}
               playsInline
               preload="auto"
               muted={false}
             />
-            {phase === 'initial' && (
+            {phase === 'initial' && isInitialReady && (
               <motion.div 
                 animate={{ opacity: [0.3, 0.6, 0.3] }}
                 transition={{ repeat: Infinity, duration: 3 }}
@@ -93,18 +127,29 @@ export default function Home() {
         {/* SECTION 1: HERO */}
         <section className="relative h-screen w-full snap-start flex items-center justify-center bg-black overflow-hidden">
           <video
+            ref={heroVideoRef}
             src="/videos/walking_sceen.mp4"
-            className="absolute inset-0 w-full h-full object-cover opacity-60"
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${isHeroReady ? 'opacity-60' : 'opacity-0'}`}
             autoPlay
             muted
             loop
             playsInline
+            preload="auto"
+            onCanPlay={() => setIsHeroReady(true)}
+            onCanPlayThrough={() => setIsHeroReady(true)}
             onTimeUpdate={(e) => {
               if (e.currentTarget.currentTime >= 10) {
                 e.currentTarget.currentTime = 0;
               }
             }}
           />
+          
+          {/* Skeleton/Placeholder for Hero Video */}
+          {!isHeroReady && (
+             <div className="absolute inset-0 bg-[#0a0a0a] flex items-center justify-center">
+                <div className="w-8 h-8 border border-white/10 rounded-full animate-pulse" />
+             </div>
+          )}
           <motion.div 
             initial="hidden"
             whileInView="visible"
@@ -188,7 +233,52 @@ export default function Home() {
           </div>
         </section>
 
-        {/* SECTION 4: RSVP & MELODY */}
+        {/* SECTION 4: IMPORTANT INFO */}
+        <section className="relative h-screen w-full snap-start flex flex-col bg-[#2d362a] text-ivory overflow-hidden px-4 py-12 md:py-24 border-y border-white/5">
+           <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            variants={sectionVariants}
+            className="max-w-4xl w-full mx-auto my-auto space-y-12 md:space-y-16"
+          >
+            <div className="text-center mb-4">
+               <h2 className="elegant-font text-3xl md:text-5xl text-beige uppercase tracking-[0.3em] mb-4">Important Info</h2>
+               <div className="h-[1px] w-16 bg-beige/30 mx-auto" />
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8 md:gap-12">
+               {/* Children Policy */}
+               <div className="bg-white/5 p-8 rounded-sm border border-white/10 backdrop-blur-sm space-y-4 transition-all hover:bg-white/10">
+                  <div className="flex items-center gap-4 text-beige">
+                     <Heart className="w-5 h-5" />
+                     <span className="text-[10px] uppercase tracking-[0.3em] font-bold">A Note on Little Ones</span>
+                  </div>
+                  <p className="text-sm md:text-base font-light text-ivory/70 leading-relaxed italic">
+                    "With love, we leave the little ones at home for this celebration" 🥰
+                  </p>
+               </div>
+
+               {/* Timing & Seating */}
+               <div className="bg-white/5 p-8 rounded-sm border border-white/10 backdrop-blur-sm space-y-6 transition-all hover:bg-white/10">
+                  <div className="flex items-center gap-4 text-beige">
+                     <Sparkles className="w-5 h-5" />
+                     <span className="text-[10px] uppercase tracking-[0.3em] font-bold">Timing & Seating</span>
+                  </div>
+                  <div className="space-y-4">
+                     <div className="flex flex-col">
+                        <span className="text-[10px] uppercase tracking-[0.2em] text-beige/60 mb-1">Arrival At</span>
+                        <span className="text-3xl md:text-4xl elegant-font text-ivory tracking-widest">7:00 PM</span>
+                     </div>
+                     <p className="text-xs md:text-sm font-light text-ivory/60 leading-relaxed">
+                        Kindly arrive on time, as the celebration will conclude early. Please be seated accordingly.
+                     </p>
+                  </div>
+               </div>
+            </div>
+          </motion.div>
+        </section>
+
+        {/* SECTION 5: RSVP & MELODY */}
         <section id="rsvp" className="relative min-h-screen h-screen w-full snap-start flex flex-col bg-beige overflow-y-auto px-4 py-6 md:py-12 custom-scrollbar">
           <motion.div 
             initial="hidden"

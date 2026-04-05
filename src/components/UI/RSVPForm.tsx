@@ -11,9 +11,8 @@ export default function RSVPForm() {
 
   const onSubmit = async (data: any) => {
     setIsSubmitting(true);
-    console.log('Form Submitted:', data);
+    console.log('Form Submitted directly to MonkeysMail:', data);
 
-    // Mock Email Logic using the provided API details
     const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
     const url = "https://smtp.monkeysmail.com/messages/send";
 
@@ -22,7 +21,7 @@ export default function RSVPForm() {
         email: "no-reply@monkeys.cloud",
         name: "Engagement RSVP"
       },
-      to: [process.env.NEXT_PUBLIC_EMAIL],
+      to: [process.env.NEXT_PUBLIC_EMAIL || 'marouane.amanar07@gmail.com'],
       subject: `New RSVP: ${data.name}`,
       text: `Guest: ${data.name}\nEmail: ${data.email}\nMelody Request: ${data.melody || 'None'}`,
       html: `
@@ -45,12 +44,13 @@ export default function RSVPForm() {
         body: JSON.stringify(emailBody)
       });
       
-      console.log('Sending email with payload:', emailBody);
-      alert('Shukran! Your RSVP and melody request have been received.');
+      if (!response.ok) {
+        console.error('MonkeysMail API failure:', response.status);
+      }
       reset();
     } catch (error) {
       console.error('Error sending RSVP:', error);
-      alert('Something went wrong. Please try again later.');
+      reset();
     } finally {
       setIsSubmitting(false);
     }
