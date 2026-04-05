@@ -9,6 +9,7 @@ import { Heart, Music, Sparkles, ChevronDown } from 'lucide-react';
 
 export default function Home() {
   const [phase, setPhase] = useState<'initial' | 'playing' | 'ended'>('initial');
+  const [isLoading, setIsLoading] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
   const heroVideoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -16,8 +17,24 @@ export default function Home() {
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
+    
+    // Fail-safe: loader MUST disappear after 3s max
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+
+    const checkVideo = () => {
+      if (videoRef.current && videoRef.current.readyState >= 3) {
+        setIsLoading(false);
+      }
+    };
+
+    const interval = setInterval(checkVideo, 500);
+
     return () => {
       document.body.style.overflow = 'auto';
+      clearTimeout(timer);
+      clearInterval(interval);
     };
   }, []);
 
@@ -52,6 +69,30 @@ export default function Home() {
   return (
     <main className="bg-sage text-ivory min-h-screen w-full overflow-hidden">
       
+      {/* ===== SIMPLE LOADER (Fades out when video is ready) ===== */}
+      <AnimatePresence>
+        {isLoading && (
+          <motion.div 
+            key="loader"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-sage"
+          >
+            <motion.div 
+              animate={{ 
+                scale: [1, 1.2, 1],
+                opacity: [0.5, 1, 0.5]
+              }}
+              transition={{ repeat: Infinity, duration: 1.5 }}
+              className="flex flex-col items-center gap-4"
+            >
+              <div className="w-12 h-12 border-2 border-beige/30 border-t-beige rounded-full animate-spin" />
+              <span className="elegant-font text-xs uppercase tracking-[0.4em] text-beige">Loading</span>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* ===== INITIAL VIDEO OVERLAY ===== */}
       <AnimatePresence>
         {phase !== 'ended' && (
@@ -68,11 +109,13 @@ export default function Home() {
               className="absolute inset-0 w-full h-full object-cover"
               onTimeUpdate={handleTimeUpdate}
               onEnded={handleVideoEnd}
+              onCanPlay={() => setIsLoading(false)}
+              onCanPlayThrough={() => setIsLoading(false)}
               playsInline
               preload="auto"
               muted={false}
             />
-            {phase === 'initial' && (
+            {phase === 'initial' && !isLoading && (
               <motion.div 
                 animate={{ opacity: [0.3, 0.6, 0.3] }}
                 transition={{ repeat: Infinity, duration: 3 }}
