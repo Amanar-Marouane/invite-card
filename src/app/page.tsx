@@ -25,7 +25,7 @@ export default function Home() {
 
     const checkVideo = () => {
       if (videoRef.current && videoRef.current.readyState >= 3) {
-        setIsLoading(false);
+        setTimeout(() => setIsLoading(false), 200);
       }
     };
 
@@ -100,7 +100,7 @@ export default function Home() {
             initial={{ opacity: 1 }}
             exit={{ opacity: 0, scale: 1.05, filter: 'blur(15px)' }}
             transition={{ duration: 1.2, ease: "easeInOut" }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-sage"
             onClick={handleStart}
           >
             <video
@@ -109,8 +109,7 @@ export default function Home() {
               className="absolute inset-0 w-full h-full object-cover"
               onTimeUpdate={handleTimeUpdate}
               onEnded={handleVideoEnd}
-              onCanPlay={() => setIsLoading(false)}
-              onCanPlayThrough={() => setIsLoading(false)}
+              onCanPlay={() => setTimeout(() => setIsLoading(false), 200)}
               playsInline
               preload="auto"
               muted={false}
