@@ -11,45 +11,23 @@ export default function RSVPForm() {
 
   const onSubmit = async (data: any) => {
     setIsSubmitting(true);
-    console.log('Form Submitted directly to MonkeysMail:', data);
-
-    const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
-    const url = "https://smtp.monkeysmail.com/messages/send";
-
-    const emailBody = {
-      from: {
-        email: "no-reply@monkeys.cloud",
-        name: "Engagement RSVP"
-      },
-      to: [process.env.NEXT_PUBLIC_EMAIL || 'marouane.amanar07@gmail.com'],
-      subject: `New RSVP: ${data.name}`,
-      text: `Guest: ${data.name}\nEmail: ${data.email}\nMelody Request: ${data.melody || 'None'}`,
-      html: `
-        <div style="font-family: sans-serif; padding: 20px; color: #333;">
-          <h2 style="color: #96A58F;">New Engagement RSVP</h2>
-          <p><strong>Guest Name:</strong> ${data.name}</p>
-          <p><strong>Email:</strong> ${data.email}</p>
-          <p><strong>Melody Request:</strong> ${data.melody || 'None'}</p>
-        </div>
-      `
-    };
+    console.log('Sending RSVP via local proxy...');
 
     try {
-      const response = await fetch(url, {
+      const response = await fetch('/api/rsvp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-API-Key': API_KEY as string
         },
-        body: JSON.stringify(emailBody)
+        body: JSON.stringify(data)
       });
       
       if (!response.ok) {
-        console.error('MonkeysMail API failure:', response.status);
+        console.error('RSVP API Proxy failure:', response.status);
       }
       reset();
     } catch (error) {
-      console.error('Error sending RSVP:', error);
+      console.error('Error sending RSVP via Proxy:', error);
       reset();
     } finally {
       setIsSubmitting(false);

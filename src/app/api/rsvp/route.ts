@@ -1,44 +1,39 @@
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
-  console.log('RSVP API Route hit');
+  console.log('RSVP API Route hit (Mailtrap)');
   try {
     const body = await request.json();
     const { name, email, melody } = body;
 
-    const API_KEY = process.env.NEXT_PUBLIC_API_KEY; // Using the key from .env
-    const url = "https://smtp.monkeysmail.com/messages/send";
+    const API_TOKEN = process.env.NEXT_PUBLIC_API_KEY; 
+    const url = "https://send.api.mailtrap.io/api/send";
 
     const emailBody = {
       from: {
-        email: "no-reply@monkeys.cloud",
-        name: "Engagement RSVP"
+        email: "hello@demomailtrap.co",
+        name: "Engagement Invitation"
       },
-      to: [process.env.NEXT_PUBLIC_EMAIL || 'yorch.peraza@gmail.com'],
+      to: [
+        { email: process.env.NEXT_PUBLIC_EMAIL || 'marouane.amanar07@gmail.com' }
+      ],
       subject: `New RSVP: ${name}`,
       text: `Guest: ${name}\nEmail: ${email}\nMelody Request: ${melody || 'None'}`,
-      html: `
-        <div style="font-family: sans-serif; padding: 20px; color: #333;">
-          <h2 style="color: #96A58F;">New Engagement RSVP</h2>
-          <p><strong>Guest Name:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Melody Request:</strong> ${melody || 'None'}</p>
-        </div>
-      `
+      category: "RSVP Submission"
     };
 
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-API-Key': API_KEY as string
+        'Authorization': `Bearer ${API_TOKEN}`
       },
       body: JSON.stringify(emailBody)
     });
 
     if (!response.ok) {
       const errorData = await response.text();
-      console.error('MonkeysMail API silent failure:', errorData);
+      console.error('Mailtrap API silent failure:', errorData);
     }
 
     return NextResponse.json({ success: true });
