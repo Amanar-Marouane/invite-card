@@ -11,15 +11,17 @@ export async function POST(request: Request) {
 
     const emailBody = {
       from: {
-        email: "hello@demomailtrap.co",
-        name: "Engagement Invitation"
+        email: "hello@wearegettingmarried.me",
+        name: "Engagement Invitation",
       },
       to: [
-        { email: process.env.NEXT_PUBLIC_EMAIL || 'marouane.amanar07@gmail.com' }
+        {
+          email: process.env.NEXT_PUBLIC_EMAIL || "marouane.amanar07@gmail.com",
+        },
       ],
       subject: `New RSVP: ${name}`,
-      text: `Guest: ${name}\nEmail: ${email}\nMelody Request: ${melody || 'None'}`,
-      category: "RSVP Submission"
+      text: `Guest: ${name}\nEmail: ${email}\nMelody Request: ${melody || "None"}`,
+      category: "RSVP Submission",
     };
 
     const response = await fetch(url, {
