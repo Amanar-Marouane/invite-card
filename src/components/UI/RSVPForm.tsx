@@ -41,7 +41,6 @@ export default function RSVPForm() {
       
       <div className="text-center mb-10 relative z-10">
         <h2 className="elegant-font text-3xl md:text-4xl text-sage mb-2 uppercase tracking-widest">Join Our Celebration</h2>
-        <p className="text-[10px] tracking-[0.3em] text-sage/60 uppercase">Kindly respond by May 20th</p>
       </div>
       
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 md:space-y-8 relative z-10">
@@ -49,7 +48,7 @@ export default function RSVPForm() {
         {/* Melody Section - Before RSVP fields as requested */}
         <div className="space-y-4 pb-4 border-b border-sage/10">
           <div className="flex items-center gap-2 mb-2">
-            <Music className="w-4 h-4 text-beige" />
+            <Music className="w-4 h-4 text-beige-dark" />
             <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-sage/80">Request a Melody</span>
           </div>
           <div className="relative group/field">
@@ -64,7 +63,7 @@ export default function RSVPForm() {
         {/* Name Field */}
         <div className="relative group/field pt-4">
           <div className="flex items-center gap-2 mb-2">
-            <User className="w-4 h-4 text-beige" />
+            <User className="w-4 h-4 text-beige-dark" />
             <label className="text-[10px] uppercase tracking-[0.2em] font-bold text-sage/80">Full Name</label>
           </div>
           <input
@@ -78,7 +77,7 @@ export default function RSVPForm() {
         {/* Email Field */}
         <div className="relative group/field">
           <div className="flex items-center gap-2 mb-2">
-            <Mail className="w-4 h-4 text-beige" />
+            <Mail className="w-4 h-4 text-beige-dark" />
             <label className="text-[10px] uppercase tracking-[0.2em] font-bold text-sage/80">Email Address</label>
           </div>
           <input

@@ -13,7 +13,7 @@ export default function Countdown({ eventDate }: CountdownProps) {
   if (isExpired) {
     return (
       <div className="text-center py-8">
-        <h2 className="elegant-font text-4xl md:text-6xl text-beige animate-pulse uppercase tracking-widest">Our Journey Begins</h2>
+        <h2 className="elegant-font text-4xl md:text-6xl text-beige-dark animate-pulse uppercase tracking-widest">Our Journey Begins</h2>
       </div>
     );
   }
@@ -40,12 +40,12 @@ export default function Countdown({ eventDate }: CountdownProps) {
           <div className="relative bg-white/5 border border-beige/20 rounded-full w-20 h-20 md:w-32 lg:w-36 md:h-32 lg:h-36 flex flex-col items-center justify-center backdrop-blur-md shadow-2xl transition-all duration-500 group-hover:border-beige/50 group-hover:-translate-y-1">
 
             {/* Value */}
-            <span className="text-xl md:text-4xl lg:text-5xl font-light text-beige block leading-none mb-1">
+            <span className="text-xl md:text-4xl lg:text-5xl font-light text-beige-dark block leading-none mb-1">
               {String(item.value).padStart(2, '0')}
             </span>
 
             {/* Label */}
-            <span className="text-[6px] md:text-[8px] lg:text-[9px] uppercase tracking-[0.2em] font-medium text-ivory/60 group-hover:text-beige/80 transition-colors">
+            <span className="text-[10px] md:text-xs lg:text-sm uppercase tracking-[0.2em] font-medium text-ivory/60 group-hover:text-beige-dark/80 transition-colors">
               {item.label}
             </span>
 

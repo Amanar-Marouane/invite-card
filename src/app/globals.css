@@ -4,7 +4,8 @@
   --background: #96A58F;
   --foreground: #1A1D1A;
   --sage-green: #96A58F; /* Silvery Eucalyptus */
-  --beige: #D2C4B5;      /* Warm Sand Beige */
+  --beige: #E3D5CA;      /* Light Sand Beige for backgrounds */
+  --beige-dark: #8D7B68; /* Rich Earth Beige for text contrast */
   --ivory: #FDFDFA;      /* Pearlescent White */
 }
 
@@ -13,6 +14,7 @@
   --color-foreground: var(--foreground);
   --color-sage: var(--sage-green);
   --color-beige: var(--beige);
+  --color-beige-dark: var(--beige-dark);
   --color-ivory: var(--ivory);
   
   --font-sans: var(--font-montserrat);

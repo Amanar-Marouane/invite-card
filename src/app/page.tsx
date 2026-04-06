@@ -202,13 +202,13 @@ export default function Home() {
             className="flex flex-col items-center text-center relative z-10 my-auto"
           >
             <div className="mb-12 md:mb-16">
-              <span className="text-[10px] md:text-xs uppercase tracking-[0.8em] text-ivory/60 font-medium">
+              <span className="text-[12px] md:text-md uppercase tracking-[0.8em] text-ivory/60 font-medium">
                 Counting the Days
               </span>
               <div className="h-[1px] w-10 bg-beige/30 mx-auto mt-4" />
             </div>
             <Countdown eventDate={eventDate} />
-            <p className="mt-16 md:mt-20 text-[10px] md:text-xs uppercase tracking-[0.8em] text-ivory/30 italic">
+            <p className="mt-16 md:mt-20 text-[12px] md:text-xs uppercase tracking-[0.8em] text-ivory/80 italic">
               Tanger • Morocco
             </p>
           </motion.div>
@@ -222,13 +222,13 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }} 
               className="space-y-4 md:space-y-8 text-center md:text-left"
             >
-              <h2 className="elegant-font text-4xl md:text-6xl text-beige uppercase tracking-[0.2em]">The Venue</h2>
+              <h2 className="elegant-font text-4xl md:text-6xl text-beige-dark uppercase tracking-[0.2em]">The Venue</h2>
               <div className="w-12 h-[1px] bg-beige/30 mx-auto md:mx-0" />
               <p className="text-sm md:text-lg font-light leading-relaxed text-ivory/70 max-w-md mx-auto md:mx-0">
                 A setting of timeless elegance awaits as we celebrate this engagement. We await your presence at Salle Zouhra.
               </p>
               <div className="flex items-center justify-center md:justify-start gap-4">
-                <Sparkles className="w-4 h-4 text-beige" />
+                <Sparkles className="w-4 h-4 text-beige-dark" />
                 <span className="text-[9px] md:text-xs uppercase tracking-[0.2em] text-ivory/50 font-medium">Grand Celebration Hall</span>
               </div>
             </motion.div>
@@ -247,14 +247,14 @@ export default function Home() {
             className="max-w-4xl w-full mx-auto my-auto space-y-12 md:space-y-16"
           >
             <div className="text-center mb-4">
-               <h2 className="elegant-font text-3xl md:text-5xl text-beige uppercase tracking-[0.3em] mb-4">Important Info</h2>
+               <h2 className="elegant-font text-3xl md:text-5xl text-beige-dark uppercase tracking-[0.3em] mb-4">Important Info</h2>
                <div className="h-[1px] w-16 bg-beige/30 mx-auto" />
             </div>
 
             <div className="grid md:grid-cols-2 gap-8 md:gap-12">
                {/* Children Policy */}
                <div className="bg-white/5 p-8 rounded-sm border border-white/10 backdrop-blur-sm space-y-4 transition-all hover:bg-white/10">
-                  <div className="flex items-center gap-4 text-beige">
+                  <div className="flex items-center gap-4 text-beige-dark">
                      <Heart className="w-5 h-5" />
                      <span className="text-[10px] uppercase tracking-[0.3em] font-bold">A Note on Little Ones</span>
                   </div>
@@ -265,13 +265,13 @@ export default function Home() {
 
                {/* Timing & Seating */}
                <div className="bg-white/5 p-8 rounded-sm border border-white/10 backdrop-blur-sm space-y-6 transition-all hover:bg-white/10">
-                  <div className="flex items-center gap-4 text-beige">
+                  <div className="flex items-center gap-4 text-beige-dark">
                      <Sparkles className="w-5 h-5" />
                      <span className="text-[10px] uppercase tracking-[0.3em] font-bold">Timing & Seating</span>
                   </div>
                   <div className="space-y-4">
                      <div className="flex flex-col">
-                        <span className="text-[10px] uppercase tracking-[0.2em] text-beige/60 mb-1">Arrival At</span>
+                        <span className="text-[10px] uppercase tracking-[0.2em] text-beige-dark/60 mb-1">Arrival At</span>
                         <span className="text-3xl md:text-4xl elegant-font text-ivory tracking-widest">7:00 PM</span>
                      </div>
                      <p className="text-xs md:text-sm font-light text-ivory/60 leading-relaxed">

@@ -23,11 +23,11 @@ export default function Venue() {
         <div className="p-5 md:p-8 space-y-4">
           <div className="flex justify-between items-start">
             <div>
-              <h3 className="elegant-font text-2xl md:text-3xl text-beige mb-1 leading-tight uppercase tracking-widest">Salle Zouhra</h3>
+              <h3 className="elegant-font text-2xl md:text-3xl text-beige-dark mb-1 leading-tight uppercase tracking-widest">Salle Zouhra</h3>
               <p className="text-[9px] md:text-[10px] text-ivory/40 tracking-[0.3em] uppercase">Hay Al Mourabit, Tanger</p>
             </div>
             <div className="bg-beige/10 p-2 md:p-3 rounded-full border border-beige/20">
-              <MapPin className="w-3 h-3 md:w-4 md:h-4 text-beige" />
+              <MapPin className="w-3 h-3 md:w-4 md:h-4 text-beige-dark" />
             </div>
           </div>
           
@@ -43,7 +43,7 @@ export default function Venue() {
             href="https://www.google.com/maps/place//data=!4m2!3m1!1s0xd0b819c8b2c6ffb:0xf7fe5ff05e0defe?entry=s&sa=X&ved=2ahUKEwjnlMCCgNeTAxVGnf0HHQolKl4Q4kB6BAgREAA&hl=fr&g_ep=Eg1tbF8yMDI2MDIyNV8wIOC7DCoASAJQAg%3D%3D"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full bg-beige/20 border border-beige/30 text-beige py-3 md:py-4 rounded-xl text-[9px] md:text-[10px] font-bold uppercase tracking-[0.4em] block text-center backdrop-blur-sm transition-all duration-300 mt-4 md:mt-6"
+            className="w-full bg-beige/20 border border-beige/30 text-beige-dark py-3 md:py-4 rounded-xl text-[9px] md:text-[10px] font-bold uppercase tracking-[0.4em] block text-center backdrop-blur-sm transition-all duration-300 mt-4 md:mt-6"
           >
             Locate Ceremony
           </motion.a>
