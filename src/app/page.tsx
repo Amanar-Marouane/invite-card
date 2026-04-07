@@ -225,7 +225,7 @@ export default function Home() {
               <h2 className="elegant-font text-4xl md:text-6xl text-beige-dark uppercase tracking-[0.2em]">The Venue</h2>
               <div className="w-12 h-[1px] bg-beige/30 mx-auto md:mx-0" />
               <p className="text-sm md:text-lg font-light leading-relaxed text-ivory/70 max-w-md mx-auto md:mx-0">
-                A setting of timeless elegance awaits as we celebrate this engagement. We await your presence at Salle Zouhra.
+                A setting of timeless elegance awaits as we celebrate this wedding. We await your presence at Salle Zouhra.
               </p>
               <div className="flex items-center justify-center md:justify-start gap-4">
                 <Sparkles className="w-4 h-4 text-beige-dark" />

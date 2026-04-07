@@ -19,8 +19,8 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "The Engagement Celebration",
-  description: "A digital invitation for our engagement.",
+  title: "The Wedding Celebration",
+  description: "A digital invitation for our wedding.",
 };
 
 import MusicPlayer from "@/components/UI/MusicPlayer";

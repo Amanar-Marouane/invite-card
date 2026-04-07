@@ -12,7 +12,7 @@ export async function POST(request: Request) {
     const emailBody = {
       from: {
         email: "hello@wearegettingmarried.me",
-        name: "Engagement Invitation",
+        name: "Wedding Invitation",
       },
       to: [
         {
